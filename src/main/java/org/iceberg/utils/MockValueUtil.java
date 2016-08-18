@@ -110,6 +110,13 @@ public class MockValueUtil {
 
 
 
+
+        /***************       指定类型处理开始          **************/
+
+        /***************       指定类型处理结束          **************/
+
+
+
         f.set(t,mockValue(f.getType()));
         return false;
     }
