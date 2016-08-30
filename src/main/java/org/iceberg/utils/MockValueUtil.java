@@ -42,6 +42,7 @@ public class MockValueUtil {
 
     /**
      * 给创建好的实例属性赋值，传入null不处理
+     * 实例内属性，如果赋值了子类，则按照子类赋值，如果没有，则按照父类赋值，接口不赋值
      * @param t
      * @param <T>
      */
@@ -150,16 +151,16 @@ public class MockValueUtil {
             return;
         }
 
-        if(f.get(t)!=null){//给已有对象赋值
-            setMockValue(f.get(t));
-            return ;
-        }
+
 
         /***************       指定类型处理结束          **************/
 
 
-
-        f.set(t,mockValue(f.getType()));
+        if(f.get(t)!=null){//给已有对象赋值
+            setMockValue(f.get(t));
+        }else{
+            f.set(t,mockValue(f.getType()));
+        }
         return ;
     }
 
