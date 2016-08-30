@@ -1,4 +1,4 @@
-package com.xkeshi.utils;
+package org.iceberg.utils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
