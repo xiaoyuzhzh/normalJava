@@ -19,7 +19,11 @@ import java.util.Map;
  */
 public class MockValueUtil {
 
-    public static boolean debug = false;
+    public static int MOCK_LIST_LENGTH = 5;
+
+    public static boolean DEBUG = false;
+
+
 
     /**
      * 根据传入的type类型，创建实例并返回值
@@ -39,9 +43,9 @@ public class MockValueUtil {
             setMockValue(t);
             return t;
         } catch (InstantiationException e) {
-            if(debug) e.printStackTrace();
+            if(DEBUG) e.printStackTrace();
         } catch (IllegalAccessException e) {
-            if(debug) e.printStackTrace();
+            if(DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -82,7 +86,7 @@ public class MockValueUtil {
             try {
                 mockFieldValue(t, f);
             } catch (Exception e) {
-                if(debug) e.printStackTrace();
+                if(DEBUG) e.printStackTrace();
             }
         }
     }
@@ -129,7 +133,9 @@ public class MockValueUtil {
                         System.out.println(c.getName()+" is a interface,can't be instantiated");
                         f.set(t,new LinkedList<>());
                     }else{
-                        l.add(mockValue(c));//泛型为包装类的时候，这个方法没法赋值。需要单独处理包装类
+                        for(int i = 1 ; i<MOCK_LIST_LENGTH;i++){
+                            l.add(mockValue(c));
+                        }
                         f.set(t,l);
                     }
                 }
@@ -185,7 +191,8 @@ public class MockValueUtil {
     }
 
     public static void main(String[] args) {
-        MockValueUtil.debug = true;
+        MockValueUtil.DEBUG = true;
+        MockValueUtil.MOCK_LIST_LENGTH = 10;
         System.out.println(JSON.toJSONString(mockValue(Result.class),true));
 
 //        Class clazz = TestC.AAA.getClass();
