@@ -1,10 +1,14 @@
 package org.iceberg.utils;
 
+import com.alibaba.fastjson.JSON;
+import org.iceberg.test.TestC;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +33,9 @@ public class MockValueUtil {
         }
 
         try {
-            T t = clazz.newInstance();
+            T t = getValueIfWrapperClass(clazz);
+            if(t!=null) return t;
+            t = clazz.newInstance();
             setMockValue(t);
             return t;
         } catch (InstantiationException e) {
@@ -98,29 +104,9 @@ public class MockValueUtil {
 
 
         /***************       基本包装类型处理开始          **************/
-        if(f.getType().equals(String.class)){
-            f.set(t,String.valueOf("1"));
-            return ;
-        }
-        if(f.getType().equals(Long.class)){
-            f.set(t,Long.valueOf(1l));
-            return ;
-        }
-        if(f.getType().equals(Integer.class)){
-            f.set(t,Integer.valueOf(1));
-            return ;
-        }
-        if(f.getType().equals(Boolean.class)){
-            f.set(t,Boolean.valueOf(true));
-            return ;
-        }
-        if(f.getType().equals(BigDecimal.class)){
-            f.set(t,BigDecimal.valueOf(11));
-            return ;
-        }
-        if(f.getType().equals(Date.class)){
-            f.set(t,new Date());
-            return ;
+        if(getValueIfWrapperClass(f.getType())!=null){
+            f.set(t,getValueIfWrapperClass(f.getType()));
+            return;
         }
         /***************       基本包装类型处理结束          **************/
 
@@ -143,7 +129,7 @@ public class MockValueUtil {
                         System.out.println(c.getName()+" is a interface,can't be instantiated");
                         f.set(t,new LinkedList<>());
                     }else{
-                        l.add(mockValue(c));
+                        l.add(mockValue(c));//泛型为包装类的时候，这个方法没法赋值。需要单独处理包装类
                         f.set(t,l);
                     }
                 }
@@ -164,10 +150,48 @@ public class MockValueUtil {
         return ;
     }
 
-    public static void main(String[] args) {
-//        MockValueUtil.debug = true;
-//        System.out.println(JSON.toJSONString(mockValue(Result.class),true));
 
+    public static <T> T getValueIfWrapperClass(Class<T> clazz){
+        if(clazz == null){
+            return null;
+        }
+        if(clazz.equals(String.class)){
+            return (T)"1";
+        }
+        if(clazz.equals(Long.class)){
+            return (T)Long.valueOf(1);
+        }
+        if(clazz.equals(Integer.class)){
+            return (T) Integer.valueOf(1);
+        }
+        if(clazz.equals(Boolean.class)){
+            return (T)Boolean.valueOf(true);
+        }
+        if(clazz.equals(BigDecimal.class)){
+            return (T)BigDecimal.ONE;
+        }
+        if(clazz.equals(Date.class)){
+            return (T)new Date();
+        }
+        if(clazz.equals(Double.class)){
+            return (T)Double.valueOf(1.00);
+        }
+        if(clazz.isEnum()){
+            if(clazz.getEnumConstants().length!=0){
+                return clazz.getEnumConstants()[0];
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        MockValueUtil.debug = true;
+        System.out.println(JSON.toJSONString(mockValue(Result.class),true));
+
+//        Class clazz = TestC.AAA.getClass();
+//        System.out.println(clazz.isPrimitive());
+//        System.out.println(clazz.isEnum());
+//        System.out.println(clazz.getEnumConstants()[0]);
     }
 
     static class Result{
