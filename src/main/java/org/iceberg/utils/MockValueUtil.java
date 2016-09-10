@@ -195,10 +195,6 @@ public class MockValueUtil {
         MockValueUtil.MOCK_LIST_LENGTH = 10;
         System.out.println(JSON.toJSONString(mockValue(Result.class),true));
 
-//        Class clazz = TestC.AAA.getClass();
-//        System.out.println(clazz.isPrimitive());
-//        System.out.println(clazz.isEnum());
-//        System.out.println(clazz.getEnumConstants()[0]);
     }
 
     static class Result{
