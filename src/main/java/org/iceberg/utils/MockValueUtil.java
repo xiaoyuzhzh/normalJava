@@ -1,14 +1,12 @@
 package org.iceberg.utils;
 
 import com.alibaba.fastjson.JSON;
-import org.iceberg.test.TestC;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.net.InetAddress;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -194,7 +192,6 @@ public class MockValueUtil {
         MockValueUtil.DEBUG = true;
         MockValueUtil.MOCK_LIST_LENGTH = 10;
         System.out.println(JSON.toJSONString(mockValue(Result.class),true));
-
     }
 
     static class Result{
