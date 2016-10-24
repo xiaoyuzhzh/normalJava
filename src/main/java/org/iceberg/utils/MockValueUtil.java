@@ -131,7 +131,7 @@ public class MockValueUtil {
                         System.out.println(c.getName()+" is a interface,can't be instantiated");
                         f.set(t,new LinkedList<>());
                     }else{
-                        for(int i = 1 ; i<MOCK_LIST_LENGTH;i++){
+                        for(int i = 0 ; i<MOCK_LIST_LENGTH;i++){
                             l.add(mockValue(c));
                         }
                         f.set(t,l);
@@ -190,7 +190,7 @@ public class MockValueUtil {
 
     public static void main(String[] args) {
         MockValueUtil.DEBUG = true;
-        MockValueUtil.MOCK_LIST_LENGTH = 10;
+        MockValueUtil.MOCK_LIST_LENGTH = 2;
         System.out.println(JSON.toJSONString(mockValue(Result.class),true));
     }
 
