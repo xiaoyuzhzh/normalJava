@@ -49,9 +49,10 @@ public class MergeSort {
     public static void main(String[] args) {
         int i;//循环变量
         int datalength;//归并序列长度
-        int n = 9;
 
-        data = new int[]{0,6,5,4,7,2,8,1,9,0};
+        data = new int[]{0,6,5,4,7,2,8,1,9,3};
+
+        int n = data.length -1;
 
         System.out.println("Before merge sorting;"+Arrays.toString(data));
 
