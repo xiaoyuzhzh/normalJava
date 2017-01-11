@@ -26,6 +26,12 @@
       <artifactId>fastjson</artifactId>
       <version>1.1.41</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.caocao.hermes</groupId>
+      <artifactId>upms-api</artifactId>
+      <version>1.0.8</version>
+    </dependency>
   </dependencies>
 
   <build>

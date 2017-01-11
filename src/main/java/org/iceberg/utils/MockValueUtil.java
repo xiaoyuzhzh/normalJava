@@ -1,6 +1,9 @@
 package org.iceberg.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.caocao.hermes.upms.api.dto.UpmsResponseDto;
+import com.caocao.hermes.upms.api.dto.UpmsUserBalanceSummaryDto;
+import com.caocao.hermes.upms.api.dto.UpmsUserLimitListDto;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -189,9 +192,15 @@ public class MockValueUtil {
     }
 
     public static void main(String[] args) {
-        MockValueUtil.DEBUG = true;
+//        MockValueUtil.DEBUG = true;
+//        MockValueUtil.MOCK_LIST_LENGTH = 2;
+//        System.out.println(JSON.toJSONString(mockValue(Result.class),true));
+
         MockValueUtil.MOCK_LIST_LENGTH = 2;
-        System.out.println(JSON.toJSONString(mockValue(Result.class),true));
+        UpmsResponseDto upmsResponseDto = new UpmsResponseDto();
+        upmsResponseDto.success(mockValue(UpmsUserLimitListDto.class));
+        setMockValue(upmsResponseDto);
+        System.out.println(JSON.toJSONString(upmsResponseDto,true));
     }
 
     static class Result{
