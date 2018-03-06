@@ -27,11 +27,49 @@
       <version>1.1.41</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
     <dependency>
-      <groupId>com.caocao.hermes</groupId>
-      <artifactId>upms-api</artifactId>
-      <version>1.0.8</version>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.11.Final</version>
     </dependency>
+
+
+    <!-- es -->
+    <dependency>
+      <groupId>com.dangdang</groupId>
+      <artifactId>elastic-job-lite-core</artifactId>
+      <version>2.1.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dangdang</groupId>
+      <artifactId>elastic-job-lite-spring</artifactId>
+      <version>2.1.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-redis</artifactId>
+      <version>4.3.8.RELEASE</version>
+    </dependency>
+
+
+    <!-- vavr -->
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
+      <version>0.9.2</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.vavr/vavr-test -->
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr-test</artifactId>
+      <version>0.9.2</version>
+    </dependency>
+
+
+
+
   </dependencies>
 
   <build>

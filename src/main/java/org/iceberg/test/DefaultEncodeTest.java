@@ -11,16 +11,24 @@ import java.util.Arrays;
  */
 public class DefaultEncodeTest {
 
+    public static <T,V extends T> boolean c(T t, V v){
+        return t == v;
+    }
+
     public static void main(String[] args) throws IOException {
-        String str = "中";
-        System.out.println(Arrays.toString(str.getBytes()));
-        System.out.println(Arrays.toString(str.getBytes("UTF-8")));
-        System.out.println(Arrays.toString(str.getBytes("GBK")));
-
-
-        InputStreamReader inputStreamReader = new InputStreamReader(System.in);
-        BufferedReader br = new BufferedReader(inputStreamReader);
-
-        br.readLine();
+//        String str = "中";
+//        System.out.println(Arrays.toString(str.getBytes()));
+//        System.out.println(Arrays.toString(str.getBytes("UTF-8")));
+//        System.out.println(Arrays.toString(str.getBytes("GBK")));
+//
+//
+//        InputStreamReader inputStreamReader = new InputStreamReader(System.in);
+//        BufferedReader br = new BufferedReader(inputStreamReader);
+//        String strIn = br.readLine();
+//        System.out.println(Arrays.toString(strIn.getBytes()));
+        Double i = 0.0;
+        String j = "0";
+        System.out.println(c(i,j));
+        System.out.println(c(j,i));
     }
 }
