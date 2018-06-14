@@ -1,8 +1,11 @@
 package org.iceberg.vavr;
 
+import org.apache.zookeeper.Op;
+
 import io.vavr.collection.CharSeq;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
+import io.vavr.control.Option;
 import io.vavr.control.Validation;
 
 /**
@@ -22,15 +25,15 @@ public class ValidationTest {
 
         // Invalid(List(Name contains invalid characters: '!4?', Age must be greater than 0))
         Validation<Seq<String>, Person> invalid = personValidator.validatePerson("John? Doe!4", -1);
-        if(invalid.isValid()){
-            Person person1 = invalid.get();
 
-        }else {
-            Seq<String> error = invalid.getError();
-            System.out.println(error.toString());
-            System.out.println(error.intersperse(",").foldLeft(new StringBuilder(),StringBuilder::append).toString());
-            System.out.println(List.ofAll(error).mkString(","));
-        }
+        Person person = invalid.toEither().right().getOrElse((Person) null);
+        System.out.println(person);
+
+        Seq<String> error = invalid.toEither().left().getOrElse(()->null);
+        Option<Seq<String>> of = Option.of(error);
+        System.out.println(of.get().toString());
+        System.out.println(error.intersperse(",").foldLeft(new StringBuilder(),StringBuilder::append).toString());
+        System.out.println(List.ofAll(error).mkString(","));
 
     }
 }

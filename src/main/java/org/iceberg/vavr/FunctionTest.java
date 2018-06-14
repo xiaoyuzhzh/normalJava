@@ -30,14 +30,14 @@ public class FunctionTest {
 //        int result = add2.apply(1).apply(2);
 //        System.out.println(result);
 //
-//        Function2<Integer,Integer,Integer> sum2 = (a,b)->{
-//            System.out.println("in:"+a+","+b);
-//            return a + b;
-//        } ;
-//        Function2<Integer, Integer, Integer> cache = sum2.memoized();//这个函数会缓存入参相同的结果
-//        System.out.println(cache.apply(1,2));
-//        System.out.println(cache.apply(1,3));
-//        System.out.println(cache.apply(1,2));
+        Function2<Integer,Integer,Integer> sum2 = (a,b)->{
+            System.out.println("in:"+a+","+b);
+            return a + b;
+        } ;
+        Function2<Integer, Integer, Integer> cache = sum2.memoized();//这个函数会缓存入参相同的结果
+        System.out.println(cache.apply(1,2));
+        System.out.println(cache.apply(1,3));
+        System.out.println(cache.apply(1,2));
 
 
 //        String str = "1";

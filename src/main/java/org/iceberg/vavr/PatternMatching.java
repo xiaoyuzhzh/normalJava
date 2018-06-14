@@ -47,15 +47,15 @@ public class PatternMatching {
 //        ));
 //
 //
-//        Try<Tuple2<Integer,String>> _try = Try.of(() -> Tuple.of(1,"2"));
-//
-//        Object of = Match(_try).of(
-//                Case($Success($Tuple2($(1),$("a"))), value -> value),
-//                Case($Failure($()), x -> x),
-//                Case($(),"1")
-//        );
-//
-//        System.out.println(of);
+        Try<Tuple2<Integer,String>> _try = Try.of(() -> Tuple.of(1,"2"));
+
+        Object of = Match(_try).of(
+                Case($Success($Tuple2($(1),$("a"))), value -> value),
+                Case($Failure($()), x -> x),
+                Case($(),"1")
+        );
+
+        System.out.println(of);
 
 
 //        String a = "a";
