@@ -4,7 +4,7 @@ public class CityRuleDetail {
 	
     private Long id;
 
-    private Long ruleId;
+    public Long ruleId;
     /**
      * 规则种类
      */
