@@ -1,88 +1,127 @@
 package org.iceberg.concurrent;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
-
-import io.vavr.control.Try;
+import java.util.function.Supplier;
 
 /**
  * Created by xiaoyuzhzh on 7/2/2018.
  */
 public class DistributedLockUtil {
 
-    private static AtomicInteger successTimes = new AtomicInteger(0);
 
-    private static Synchronizer synchronizer = new Synchronizer() {
-        @Override
-        public boolean acquire(String key) {
-            return MockRedisServer.setNx(key,1);
-        }
+    private static final ThreadLocal<DistributedLock> lockMap = new ThreadLocal<>();
 
-        @Override
-        public void remove(String key) {
-            MockRedisServer.delete(key);
-        }
-    };
+    private static final ThreadLocal<AtomicInteger> lockLevel = new ThreadLocal<>();
 
-    public static void main(String[] args) throws InterruptedException {
+    private Synchronizer synchronizer;
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0 ; i< 100 ; i ++){
-            executorService.submit(()->{
-                Try.of(()-> executeInLock("aaa",doSomeThing(1),1000l,TimeUnit.MILLISECONDS)).onFailure(e -> e.printStackTrace());
-            });
-        }
-        executorService.shutdown();
-        executorService.awaitTermination(2, TimeUnit.SECONDS);
-        System.out.println("success: "+ successTimes);
+    private DistributedLockUtil(Synchronizer synchronizer) {
+        this.synchronizer = synchronizer;
     }
 
     /**
-     * 自动执行可重入锁
-     * @param key 加锁关键字
+     * 锁内执行代码，自动释放
+     *
+     * @param key      加锁关键字
      * @param function 执行函数，入参是 boolean，如果加锁成功，则是true
-     * @param <T>
-     * @return
      */
-    public static <T> T executeInLock(String key, Function<Boolean,T> function) throws Exception {
-        try(DistributedLock lock = new DistributedLock("aaa",synchronizer)){
+    public <T> T executeInLock(String key, Function<Boolean, T> function) {
+        try (DistributedLock lock = getLock(key)) {
             return function.apply(lock.tryLock());
-        }catch (Throwable e){
-            throw e;
+        }  finally {
+            releaseLock();
+        }
+    }
+
+    private DistributedLock getLock(String key) {
+        DistributedLock distributedLock = lockMap.get();
+        if (distributedLock == null) {
+            distributedLock = new DistributedLock(key, synchronizer);
+            lockMap.set(distributedLock);
+            lockLevel.set(new AtomicInteger(1));
+        } else {
+            lockLevel.get().getAndIncrement();//记录一次重复获取
+        }
+        return distributedLock;
+    }
+
+    private DistributedLock releaseLock() {
+        DistributedLock distributedLock = lockMap.get();
+        if (distributedLock != null && lockLevel.get().decrementAndGet() < 1) {
+            lockMap.remove();//移除线程上下文的锁
+        }
+        return distributedLock;
+    }
+
+    /**
+     * 锁内执行代码，自动释放
+     *
+     * @param key      加锁关键字
+     * @param supplier 如果加锁成功，则执行函数
+     */
+    public <T> T executeInLockSuccess(String key, Supplier<T> supplier) {
+        try (DistributedLock lock = getLock(key)) {
+            if (lock.tryLock()) {
+                return supplier.get();
+            } else {
+                throw new RuntimeException("lock failed");
+            }
+        }finally {
+            releaseLock();
+        }
+    }
+
+    /**
+     * 锁内执行代码，自动释放
+     *
+     * @param key      加锁关键字
+     * @param runnable 如果加锁成功，则执行函数
+     */
+    public void runInLockSuccess(String key, Runnable runnable) {
+        try (DistributedLock lock = getLock(key)) {
+            if (lock.tryLock()) {
+                runnable.run();
+            } else {
+                throw new RuntimeException("lock failed");
+            }
+        }finally {
+            releaseLock();
+        }
+    }
+
+    /**
+     * 锁内执行代码，自动释放
+     *
+     * @param key      加锁关键字
+     * @param consumer 执行函数，入参是 boolean，如果加锁成功，则是true
+     */
+    public void executeInLock(String key, Consumer<Boolean> consumer) {
+        try (DistributedLock lock = getLock(key)) {
+            consumer.accept(lock.tryLock());
+        }finally {
+            releaseLock();
         }
     }
 
     /**
      * 自动执行可重入锁
-     * @param key 加锁关键字
+     *
+     * @param key      加锁关键字
      * @param function 执行函数，入参是 boolean，如果加锁成功，则是true
-     * @param <T>
-     * @return
+     * @param timeout  加锁超时时间
+     * @param timeUnit 超时时间单位
      */
-    public static <T> T executeInLock(String key, Function<Boolean,T> function, Long timeout ,TimeUnit timeUnit) throws Exception {
-        try(DistributedLock lock = new DistributedLock("aaa",synchronizer)){
-            return function.apply(lock.tryLock(timeout,timeUnit));
-        }catch (Throwable e){
-            throw e;
+    public <T> T executeInLock(String key, Function<Boolean, T> function, Long timeout, TimeUnit timeUnit) {
+        try (DistributedLock lock = getLock(key)) {
+            return function.apply(lock.tryLock(timeout, timeUnit));
+        } catch (InterruptedException e) {
+            return function.apply(false);
+        }finally {
+            releaseLock();
         }
     }
 
-    private static Function<Boolean,Void> doSomeThing(long milliseconds) {
-        return lockSuccess -> {
-            if(lockSuccess){
-                successTimes.addAndGet(1);
-            }else {
-                System.out.println("lock failed");
-            }
-            try {
-                Thread.sleep(milliseconds);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        };
-    }
 }

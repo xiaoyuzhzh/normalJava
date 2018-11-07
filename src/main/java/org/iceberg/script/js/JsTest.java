@@ -18,18 +18,9 @@ public class JsTest
 
     public static void main(String[] args) throws Exception {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        engine.eval(new FileReader("d:/test.js"));
+        engine.eval(new FileReader("/scripts/nashorn/executable/test.js"));
 
         Invocable invocable = (Invocable) engine;
-        Object result = invocable.invokeFunction("fun1", "Peter Parker");
-        System.out.println(result);
-        System.out.println(result.getClass());
-
-        invocable.invokeFunction("fun2", new Date());
-        invocable.invokeFunction("fun2", LocalDateTime.now());
-//        invocable.invokeFunction("fun2", new Person());
-        Object fun3Result = invocable.invokeFunction("fun3", JSON.toJSONString(new Obj1()));
-        System.out.println(fun3Result);
     }
 
     public static class Obj1{

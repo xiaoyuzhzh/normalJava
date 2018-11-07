@@ -17,5 +17,5 @@ public interface Synchronizer {
      * 同步移除锁
      * @param key
      */
-    void remove(String key);
+    void release(String key);
 }

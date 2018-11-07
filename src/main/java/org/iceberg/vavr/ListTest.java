@@ -1,6 +1,9 @@
 package org.iceberg.vavr;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class ListTest {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
 //        Integer integer = Stream.from(1).filter(i -> i % 2 == 0).get();
 //        System.out.println(integer);
 
@@ -31,6 +34,10 @@ public class ListTest {
 
 
         System.out.println(list1.mkString("[",",","]"));
+
+        String str = "中";
+
+        System.out.println(Arrays.toString(str.getBytes("utf-8")));
 
 
     }
