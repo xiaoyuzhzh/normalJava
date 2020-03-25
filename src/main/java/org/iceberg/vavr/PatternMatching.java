@@ -1,21 +1,16 @@
 package org.iceberg.vavr;
 
-import com.google.common.base.Function;
 
-import java.util.Date;
-
-import io.vavr.Function1;
 import io.vavr.Tuple;
-import io.vavr.Tuple1;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static io.vavr.Patterns.*;
-import static io.vavr.Predicates.instanceOf;
-import static io.vavr.API.Match.*;
+import static io.vavr.Patterns.$Failure;
+import static io.vavr.Patterns.$Success;
+import static io.vavr.Patterns.$Tuple2;
 
 /**
  * Created by xiaoyuzhzh on 2/11/2018.

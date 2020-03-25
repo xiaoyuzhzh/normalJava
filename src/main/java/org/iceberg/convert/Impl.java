@@ -1,7 +1,6 @@
 package org.iceberg.convert;
 
 
-import com.google.common.base.Function;
 
 /**
  * Created by xiaoy on 9/12/2017.

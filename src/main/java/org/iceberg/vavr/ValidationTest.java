@@ -1,7 +1,5 @@
 package org.iceberg.vavr;
 
-import org.apache.zookeeper.Op;
-
 import io.vavr.collection.CharSeq;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
