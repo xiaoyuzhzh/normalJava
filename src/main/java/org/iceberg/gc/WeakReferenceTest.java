@@ -3,6 +3,7 @@ package org.iceberg.gc;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.LinkedList;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 
@@ -56,6 +57,8 @@ public class WeakReferenceTest {
             });
             s.setDaemon(true);
             s.start();
+
+
 
 
 //            System.out.println("gcTargetList size = " + gcTargetList.size());

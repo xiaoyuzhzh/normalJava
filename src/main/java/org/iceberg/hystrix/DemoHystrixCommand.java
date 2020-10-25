@@ -1,5 +1,7 @@
 package org.iceberg.hystrix;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -9,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -37,32 +40,43 @@ public class DemoHystrixCommand extends HystrixCommand<String> {
             long end = System.currentTimeMillis();
             System.out.println("thread interrupted in "+ (end - start)+ "ms");
         }
+        System.out.println("continue");
         return "Demo:"+name;
     }
 
     public static void main(String[] args) {
-        String first = new DemoHystrixCommand("first").execute();
-        System.out.println(first);;
+//        String first = new DemoHystrixCommand("first").execute();
+//        System.out.println(first);;
 
-//        ExecutorService executorService = Executors.newFixedThreadPool(1);
-//        Future<Integer> future = executorService.submit(() -> {
-//            try {
-//                Thread.sleep(30000);
-//            } catch (InterruptedException e) {
-//                System.out.println("current interrupted");
-//            }
-//            return 1;
-//        });
-//
-//        try {
-//            future.get(1, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (TimeoutException e) {
-//            e.printStackTrace();
-//        }
-//        future.cancel(true);
+        ExecutorService executorService = Executors.newFixedThreadPool(1, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(false);
+                return thread;
+            }
+        });
+        Future<Integer> future = executorService.submit(() -> {
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                System.out.println("current interrupted");
+            }
+            System.out.println("continue");
+            Thread.sleep(30000);
+            System.out.println("continue");
+            return 1;
+        });
+
+        try {
+            future.get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        future.cancel(true);
     }
 }

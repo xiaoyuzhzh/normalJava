@@ -12,4 +12,14 @@ public class A {
     public void p(){
         System.out.println("a");
     }
+
+    public static void main(String[] args) {
+        String s = null;
+        switch (s){
+            case "a":
+                System.out.println("a");break;
+            default:
+                System.out.println("b");
+        }
+    }
 }
